@@ -22,6 +22,7 @@ def user_chat(user_name,message):
         try:
             search_bar.send_keys(user_name)
             time.sleep(3)
+            driver.save_screenshot("ContactNameSearch_"+user_name+".png")
             driver.find_element(By.XPATH,"//span[@title='{0}']".format(user_name)).click()
             time.sleep(3)
         except:
@@ -36,32 +37,39 @@ def user_chat(user_name,message):
         time.sleep(3)
         driver.find_element(By.XPATH, "//span[@data-testid='send']").click()
         time.sleep(3)
+        driver.save_screenshot("MessageSending_"+user_name+".png")
+
     except Exception as e:
         l = str(e).split(';')
         print("Error : {0}".format(l[0]))
         return
+try:
+    if __name__=='__main__':
+        receiver_names = sys.argv[1]
+        message = sys.argv[2]
+        my_options = webdriver.ChromeOptions()
+        service_obj = Service("chromedriver.exe")
+        driver = webdriver.Chrome(service=service_obj, options=my_options)
+        driver.get("https://web.whatsapp.com/")
+        driver.implicitly_wait(15)
+        # wait until QR code presence is located in the webpage
+        wait = WebDriverWait(driver, 15)
+        wait.until(expected_conditions.presence_of_element_located((By.CSS_SELECTOR, "._10aH-")))
+        driver.save_screenshot("QRCodeScan.png")
+        time.sleep(20)
+        name_list = receiver_names.split(',')
+        for name in name_list:
+            event_start_time = datetime.now().replace(microsecond=0)
+            user_chat(name,message)
+            event_end_time = datetime.now().replace(microsecond=0)
+            elapsed_time = event_end_time-event_start_time
+            print("Expected Elapsed Time for {0} : 0:00:30".format(name))
+            print("Observed Elapsed Time for {0} : {1}".format(name,elapsed_time))
+            driver.refresh()
 
-if __name__=='__main__':
+        driver.close()
 
-    receiver_names = sys.argv[1]
-    message = sys.argv[2]
-    my_options = webdriver.ChromeOptions()
-    service_obj = Service("INSERT FILE LOCATION FOR chromedriver.exe")
-    driver = webdriver.Chrome(service=service_obj, options=my_options)
-    driver.get("https://web.whatsapp.com/")
-    driver.implicitly_wait(15)
-    # wait until QR code presence is located in the webpage
-    wait = WebDriverWait(driver, 15)
-    wait.until(expected_conditions.presence_of_element_located((By.CSS_SELECTOR, "._10aH-")))
-    time.sleep(20)
-    name_list = receiver_names.split(',')
-    for name in name_list:
-        event_start_time = datetime.now().replace(microsecond=0)
-        user_chat(name,message)
-        event_end_time = datetime.now().replace(microsecond=0)
-        elapsed_time = event_end_time-event_start_time
-        print("Expected Elapsed Time for {0} : 0:00:30".format(name))
-        print("Observed Elapsed Time for {0} : {1}".format(name,elapsed_time))
-        driver.refresh()
-
+except Exception as e:
+    l = str(e).split(';')
+    print("Error : {0}".format(l[0]))
     driver.close()
