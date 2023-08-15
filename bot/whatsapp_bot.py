@@ -46,7 +46,7 @@ if __name__=='__main__':
     receiver_names = sys.argv[1]
     message = sys.argv[2]
     my_options = webdriver.ChromeOptions()
-    service_obj = Service("C:\\Users\\SHINJINI\\AppData\\Local\\Programs\\Python\\Python39\\Lib\\site-packages\\chromedriver-win64\\chromedriver.exe")
+    service_obj = Service("INSERT FILE LOCATION FOR chromedriver.exe")
     driver = webdriver.Chrome(service=service_obj, options=my_options)
     driver.get("https://web.whatsapp.com/")
     driver.implicitly_wait(15)
